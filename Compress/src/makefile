@@ -29,9 +29,9 @@ Compress32.exe: compressor.c
 	$(CC) $(CFLAGS) -m32 -o $@ $^ -l:libpthread.a
 
 .SUFFIXES: .c
-Compress.out: compressor.c yaz0.c crc.c
+Compress.out: compressor.c
 	$(CC) $(CFLAGS) -o $@ $^
 
 .SUFFIXES: .c
-Compress: compressor.c yaz0.c crc.c
+Compress: compressor.c
 	$(CC) $(CFLAGS) -o $@ $^ -lpthread
