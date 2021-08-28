@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include "bSwap.h"
 
 uint32_t RabinKarp(uint8_t*, int, int, uint32_t*);
 uint32_t findBest(uint8_t*, int, int, uint32_t*, uint32_t*, uint32_t*, uint8_t*);

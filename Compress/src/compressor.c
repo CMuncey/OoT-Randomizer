@@ -61,6 +61,7 @@ void     errorCheck(int, char**);
 void     makeArchive();
 int32_t  getNumCores();
 int32_t  getNext();
+uint8_t  compare(uint32_t, uint8_t*, uint8_t*);
 /* 1}}} */
 
 /* Globals {{{1 */
@@ -355,7 +356,7 @@ void* threadFunc(void* null)
 
             /* If uncompressed is the same as archive, just copy/paste the compressed */
             /* Otherwise, compress it manually */
-            if((archive != NULL) && (memcmp(src, archive->ref[nextArchive], archive->refSize[nextArchive]) == 0))
+            if((archive != NULL) && compare(archive->refSize[nextArchive], src, archive->ref[nextArchive]))
             {
                 out[i].comp = 1;
                 size = archive->srcSize[nextArchive];
@@ -597,5 +598,31 @@ void errorCheck(int argc, char** argv)
         }
         fclose(file);
     }
+}
+/* 1}}} */
+
+/* uint8_t compare(uint32_t, uint8_t*, uint8_t*) {{{1 */
+uint8_t compare(uint32_t s, uint8_t* a, uint8_t* b)
+{
+    int i, j;
+    uint64_t* a2;
+    uint64_t* b2;
+
+    /* Do extra comparisons first to get to multiple of 8 */
+    for(i = 0, j = s % 8; i < j; ++i)
+        if(a[i] != b[i])
+            return(0);
+
+    /* Just to make the next part easier */
+    a2 = (uint64_t*)(a + j);
+    b2 = (uint64_t*)(b + j);
+
+    /* Do rest of comparisons 8 at a time */
+    for(i = 0, j = ((s - j) >> 3); i < j; ++i)
+        if(*a2++ != *b2++)
+            return(0);
+
+    /* They matched */
+    return(1);
 }
 /* 1}}} */
